@@ -3,7 +3,7 @@ from openai import OpenAI
 from datetime import datetime
 
 # openAIの機能を使えるようにする。clientに代入
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="OPENAI_API_KEY")
 
 # 書かせたい内容のテイストを選択肢として表示する
 content_kind_of = [
