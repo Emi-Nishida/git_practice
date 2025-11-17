@@ -1,7 +1,7 @@
+import streamlit as st
 from dotenv import load_dotenv
 import os
-import streamlit as st
-from openai import OpenAI
+import openai
 from datetime import datetime
 
 # ローカル用に .env を読み込む
@@ -10,11 +10,8 @@ load_dotenv()
 # Cloudとローカルの両対応（安全な書き方）
 api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
 
-# デバッグ用（Cloudログに出力される）
-print("APIキーの中身:", api_key)
-
-# OpenAIクライアントを初期化
-client = OpenAI(api_key=api_key)
+# OpenAI APIキーを設定（旧構文）
+openai.api_key = api_key
 
 # 書かせたい内容のテイストを選択肢として表示する
 content_kind_of = [
@@ -40,16 +37,21 @@ content_kind_of = [
 ]
 
 def run_gpt(content_text_to_gpt, content_kind_of_to_gpt, content_maxStr_to_gpt):
-    request_to_gpt = content_text_to_gpt + " また、これを記事として読めるように、記事のタイトル、目次、内容の順番で出力してください。内容は"+ content_maxStr_to_gpt + "文字以内で出力してください。" + "また、文章は" + content_kind_of_to_gpt + "にしてください。"
-    
-    response = client.chat.completions.create(
+    request_to_gpt = (
+        content_text_to_gpt
+        + " また、これを記事として読めるように、記事のタイトル、目次、内容の順番で出力してください。"
+        + "内容は" + content_maxStr_to_gpt + "文字以内で出力してください。"
+        + "また、文章は" + content_kind_of_to_gpt + "にしてください。"
+    )
+
+    response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "user", "content": request_to_gpt},
         ],
     )
 
-    output_content = response.choices[0].message.content.strip()
+    output_content = response["choices"][0]["message"]["content"].strip()
     return output_content
 
 # 評価ボタンで記事を消えないようにする
