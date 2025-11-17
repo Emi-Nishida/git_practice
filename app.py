@@ -1,17 +1,20 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-import openai
+from openai import OpenAI  # ← クライアントクラスを使う
 from datetime import datetime
 
 # ローカル用に .env を読み込む
 load_dotenv()
 
-# Cloudとローカルの両対応（安全な書き方）
-api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+# Cloudとローカルの両対応（安全な分岐）
+try:
+    api_key = st.secrets["OPENAI_API_KEY"]
+except Exception:
+    api_key = os.getenv("OPENAI_API_KEY")
 
-# OpenAI APIキーを設定（旧構文）
-openai.api_key = api_key
+# OpenAIクライアントを初期化（新構文）
+client = OpenAI(api_key=api_key)
 
 # 書かせたい内容のテイストを選択肢として表示する
 content_kind_of = [
@@ -44,14 +47,15 @@ def run_gpt(content_text_to_gpt, content_kind_of_to_gpt, content_maxStr_to_gpt):
         + "また、文章は" + content_kind_of_to_gpt + "にしてください。"
     )
 
-    response = openai.ChatCompletion.create(
+    # 新構文で呼び出し
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "user", "content": request_to_gpt},
         ],
     )
 
-    output_content = response["choices"][0]["message"]["content"].strip()
+    output_content = response.choices[0].message.content.strip()
     return output_content
 
 # 評価ボタンで記事を消えないようにする
