@@ -1,18 +1,23 @@
 import streamlit as st
 from openai import OpenAI
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# .envファイルから環境変数を読み込む
+load_dotenv()
 
 # openAIの機能を使えるようにする。clientに代入
-client = OpenAI(api_key="OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # 書かせたい内容のテイストを選択肢として表示する
 content_kind_of = [
+    "ユーモアを交えた文章",
     "中立的で客観的な文章",
     "分かりやすい、簡潔な文章",
     "親しみやすいトーンの文章",
     "専門用語をできるだけ使わない、一般読者向けの文章",
     "言葉の使い方にこだわり、正確な表現を心がけた文章",
-    "ユーモアを交えた文章",
     "シンプルかつわかりやすい文法を使った文章",
     "面白く、興味深い内容を伝える文章",
     "具体的でイメージしやすい表現を使った文章",
@@ -46,7 +51,7 @@ if 'output_content_text' not in st.session_state:
     st.session_state.output_content_text = None
 
 st.title('GPTに記事を書かせるアプリ')
-st
+
 tab1, tab2 = st.tabs(["新規作成", "履歴"])
 
 # サイドバーに入力要素を配置
