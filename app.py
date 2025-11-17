@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # openAIの機能を使えるようにする。clientに代入
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # 書かせたい内容のテイストを選択肢として表示する
 content_kind_of = [
