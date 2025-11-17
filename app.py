@@ -4,18 +4,14 @@ import streamlit as st
 from openai import OpenAI
 from datetime import datetime
 
-
 # ローカル用に .env を読み込む
 load_dotenv()
 
-# Cloudとローカルの両対応
-try:
-    api_key = st.secrets["OPENAI_API_KEY"]
-except Exception:
-    api_key = os.getenv("OPENAI_API_KEY")
+# Cloudとローカルの両対応（安全な書き方）
+api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
 
 # デバッグ用（Cloudログに出力される）
-#print("APIキーの中身:", api_key)
+print("APIキーの中身:", api_key)
 
 # OpenAIクライアントを初期化
 client = OpenAI(api_key=api_key)
