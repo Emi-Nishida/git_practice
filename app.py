@@ -1,13 +1,8 @@
 import streamlit as st
 from openai import OpenAI
 from datetime import datetime
-import os
-from dotenv import load_dotenv
 
-# .envファイルから環境変数を読み込む
-load_dotenv()
-
-# openAIの機能を使えるようにする。clientに代入
+# Streamlit SecretsからAPIキーを取得
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # 書かせたい内容のテイストを選択肢として表示する
